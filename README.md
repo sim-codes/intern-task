@@ -4,21 +4,21 @@ A Django REST API service for authentication and user management, built with Dja
 
 ## Features
 
-- User registration and authentication
-- JWT token-based authentication
-- Password reset functionality
-- User profile management
-- Rate limiting and throttling
-- API documentation with Swagger/OpenAPI
-- Redis caching support
-- PostgreSQL/SQLite database support
+- **User Registration & Authentication**: Email-based user registration and login
+- **JWT Token Management**: Access and refresh token authentication with token blacklisting
+- **Password Reset**: Secure password reset functionality with token-based verification
+- **Rate Limiting**: Comprehensive throttling on all endpoints (registration, login, password reset)
+- **API Documentation**: Interactive Swagger/OpenAPI and ReDoc documentation
+- **Redis Caching**: Optional Redis caching for improved performance
+- **Database Flexibility**: Support for SQLite (development) and PostgreSQL (production)
+- **Production Ready**: Gunicorn deployment, WhiteNoise static files, environment-based configuration
 
 ## Setup Instructions
 
 ### Prerequisites
 
-- Python 3.8+
-- Redis (optional, for caching)
+- Python 3.10+
+- Redis (for caching)
 - PostgreSQL (optional, for production database)
 
 ### Installation
@@ -31,7 +31,7 @@ A Django REST API service for authentication and user management, built with Dja
 
 2. **Create a virtual environment:**
    ```bash
-   python -m venv venv
+   python3 -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
@@ -40,14 +40,10 @@ A Django REST API service for authentication and user management, built with Dja
    pip install -r requirements.txt
    ```
 
-4. **Create environment file:**
-   Create a `.env` file in the project root with the following variables:
-
-   ```env
-   SECRET_KEY=your-secret-key-here
-   DEBUG=True
-   REDIS_URL=redis://127.0.0.1:6379/1
-   DATABASE_URL=sqlite:///db.sqlite3
+4. **Set up environment variables:**
+   ```bash
+   cp .env.example .env
+   # Edit .env file with your configuration
    ```
 
 5. **Run database migrations:**
@@ -82,29 +78,55 @@ Or use the provided test script:
 ### API Documentation
 
 Once the server is running, access the API documentation at:
-- Swagger UI: `http://localhost:8000/api/docs/`
-- ReDoc: `http://localhost:8000/api/redoc/`
+- **Swagger UI**: `http://localhost:8000/api/doc/`
+- **ReDoc**: `http://localhost:8000/api/redoc/`
+- **OpenAPI Schema**: `http://localhost:8000/api/schema/`
 
 ## Environment Variables
 
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `SECRET_KEY` | Django secret key for cryptographic signing | Yes | - |
-| `DEBUG` | Enable/disable debug mode | No | `True` |
-| `REDIS_URL` | Redis connection URL for caching | No | `redis://127.0.0.1:6379/1` |
-| `DATABASE_URL` | Database connection URL | No | SQLite database |
+| Variable | Description | Required | Default | Example |
+|----------|-------------|----------|---------|---------|
+| `SECRET_KEY` | Django secret key for cryptographic signing | Yes | - | `django-insecure-abc123...` |
+| `DEBUG` | Enable/disable debug mode | No | `True` | `False` |
+| `REDIS_URL` | Redis connection URL for caching | No | `redis://127.0.0.1:6379/1` | `redis://localhost:6379/1` |
+| `DATABASE_URL` | Database connection URL | No | SQLite database | `postgresql://user:pass@localhost:5432/dbname` |
 
 ### Database Configuration
 
-- **SQLite (default):** No additional setup required
-- **PostgreSQL:** Set `DATABASE_URL` to your PostgreSQL connection string
+- **SQLite (default)**: No additional setup required
+  ```env
+  DATABASE_URL=sqlite:///db.sqlite3
   ```
-  DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+
+- **PostgreSQL**: Set `DATABASE_URL` to your PostgreSQL connection string
+  ```env
+  DATABASE_URL=postgresql://username:password@localhost:5432/database_name
   ```
 
 ### Redis Configuration
 
-Redis is used for caching. If not configured, the application will work but caching will be disabled.
+Redis is used for caching and password reset token storage. If not configured, the application will work but caching will be disabled and password reset tokens will be stored in memory.
+
+```env
+REDIS_URL=redis://127.0.0.1:6379/1
+```
+
+## API Endpoints
+
+The API provides the following endpoints under `/api/users/`:
+
+### Authentication
+- `POST /api/users/register/` - User registration
+- `POST /api/users/login/` - User login (returns JWT tokens)
+- `POST /api/users/forgot-password/` - Request password reset
+- `POST /api/users/reset-password/` - Reset password with token
+
+### Rate Limiting
+- **Registration**: 10 requests per hour per IP
+- **Login**: 5 requests per minute per IP
+- **Password Reset**: 3 requests per hour per IP
+- **Password Reset Confirm**: 10 requests per hour per IP
+- **General**: 100 requests per hour for anonymous users, 1000 for authenticated users
 
 ## Deployment
 
@@ -118,33 +140,3 @@ This script will:
 - Install dependencies
 - Collect static files
 - Run database migrations
-
-For production deployment, make sure to:
-- Set `DEBUG=False`
-- Use a strong `SECRET_KEY`
-- Configure proper database and Redis URLs
-- Set up proper ALLOWED_HOSTS
-
-## Project Structure
-
-```
-intern-task/
-├── auth_service/          # Django project settings
-├── users/                 # User management app
-├── manage.py             # Django management script
-├── requirements.txt      # Python dependencies
-├── build.sh             # Build script
-├── run_tests.sh         # Test runner script
-└── README.md            # This file
-```
-
-## API Endpoints
-
-The API provides endpoints for:
-- User registration (`/api/v1/auth/register/`)
-- User login (`/api/v1/auth/login/`)
-- Token refresh (`/api/v1/auth/refresh/`)
-- Password reset (`/api/v1/auth/password-reset/`)
-- User profile management (`/api/v1/users/`)
-
-Refer to the API documentation for complete endpoint details.
