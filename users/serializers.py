@@ -55,3 +55,13 @@ class ResetPasswordSerializer(serializers.Serializer):
     """
     token = serializers.CharField(help_text="Password reset token received via email")
     new_password = serializers.CharField(help_text="New password for the user account")
+
+
+class UserLoginSerializer(serializers.Serializer):
+    """
+    Serializer for user login.
+    
+    Validates email and password for user authentication.
+    """
+    email = serializers.EmailField(help_text="User's email address")
+    password = serializers.CharField(help_text="User's password", write_only=True)

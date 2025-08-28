@@ -10,6 +10,7 @@ class UserRegistrationTestCase(APITestCase):
     """Test cases for user registration functionality."""
 
     def setUp(self):
+        cache.clear()  # Clear cache to avoid throttling issues in tests
         self.registration_url = reverse('user-register')
         self.valid_payload = {
             'full_name': 'John Doe',
@@ -78,6 +79,7 @@ class UserLoginTestCase(APITestCase):
     """Test cases for user login functionality."""
 
     def setUp(self):
+        cache.clear()  # Clear cache to avoid throttling issues in tests
         self.login_url = reverse('user-login')
         # Create user using the custom manager
         self.user = User.objects.create_user(
@@ -136,6 +138,7 @@ class ForgotPasswordTestCase(APITestCase):
     """Test cases for forgot password functionality."""
 
     def setUp(self):
+        cache.clear()  # Clear cache to avoid throttling issues in tests
         self.forgot_password_url = reverse('forgot-password')
         self.user = User.objects.create_user(
             email='test@example.com',
@@ -188,6 +191,7 @@ class ResetPasswordTestCase(APITestCase):
     """Test cases for password reset functionality."""
 
     def setUp(self):
+        cache.clear()  # Clear cache to avoid throttling issues in tests
         self.reset_password_url = reverse('reset-password')
         self.user = User.objects.create_user(
             email='test@example.com',
@@ -198,7 +202,7 @@ class ResetPasswordTestCase(APITestCase):
         self.new_password = 'newpassword123'
 
         # Set up valid token in cache
-        cache.set(f'pwd-reset-{self.valid_token}', self.user.pk, timeout=600)
+        cache.set(f'pwd-reset-{self.valid_token}', self.user.pk, timeout=3600)
 
     def tearDown(self):
         # Clear cache after each test

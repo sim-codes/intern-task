@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions, status, generics
 from .models import User
-from .serializers import UserRegistrationSerializer
+from .serializers import UserRegistrationSerializer, ForgotPasswordSerializer, ResetPasswordSerializer, UserLoginSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 import random
 from django.core.cache import cache
@@ -45,14 +45,7 @@ class UserRegistrationView(generics.CreateAPIView):
 @extend_schema(
     summary="User login",
     description="Authenticate user and return JWT access and refresh tokens.",
-    request={
-        'type': 'object',
-        'properties': {
-            'email': {'type': 'string', 'format': 'email'},
-            'password': {'type': 'string', 'format': 'password'},
-        },
-        'required': ['email', 'password']
-    },
+    request=UserLoginSerializer,
     responses={
         200: {
             'type': 'object',
@@ -80,9 +73,6 @@ class UserLoginView(TokenObtainPairView):
     """
     permission_classes = [permissions.AllowAny]
     throttle_classes = [LoginThrottle]
-
-
-from .serializers import ForgotPasswordSerializer, ResetPasswordSerializer
 
 
 @extend_schema(

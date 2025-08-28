@@ -10,6 +10,12 @@ class LoginThrottle(SimpleRateThrottle):
     scope = 'login'
     rate = '5/minute'
 
+    def get_cache_key(self, request, view):
+        """
+        Generate cache key based on user IP address.
+        """
+        return self.get_ident(request)
+
 
 class PasswordResetThrottle(SimpleRateThrottle):
     """
@@ -19,6 +25,12 @@ class PasswordResetThrottle(SimpleRateThrottle):
     """
     scope = 'password_reset'
     rate = '3/hour'
+
+    def get_cache_key(self, request, view):
+        """
+        Generate cache key based on user IP address.
+        """
+        return self.get_ident(request)
 
 
 class PasswordResetConfirmThrottle(SimpleRateThrottle):
@@ -30,6 +42,12 @@ class PasswordResetConfirmThrottle(SimpleRateThrottle):
     scope = 'password_reset_confirm'
     rate = '10/hour'
 
+    def get_cache_key(self, request, view):
+        """
+        Generate cache key based on user IP address.
+        """
+        return self.get_ident(request)
+
 
 class RegistrationThrottle(SimpleRateThrottle):
     """
@@ -39,3 +57,9 @@ class RegistrationThrottle(SimpleRateThrottle):
     """
     scope = 'registration'
     rate = '10/hour'
+
+    def get_cache_key(self, request, view):
+        """
+        Generate cache key based on user IP address.
+        """
+        return self.get_ident(request)
