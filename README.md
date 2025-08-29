@@ -9,7 +9,7 @@ A Django REST API service for authentication and user management, built with Dja
 - **Password Reset**: Secure password reset functionality with token-based verification
 - **Rate Limiting**: Comprehensive throttling on all endpoints (registration, login, password reset)
 - **API Documentation**: Interactive Swagger/OpenAPI and ReDoc documentation
-- **Redis Caching**: Optional Redis caching for improved performance
+- **Redis Caching**: Redis caching for improved performance
 - **Database Flexibility**: Support for SQLite (development) and PostgreSQL (production)
 - **Production Ready**: Gunicorn deployment, WhiteNoise static files, environment-based configuration
 
@@ -19,7 +19,7 @@ A Django REST API service for authentication and user management, built with Dja
 
 - Python 3.10+
 - Redis (for caching)
-- PostgreSQL (optional, for production database)
+- PostgreSQL (for production database)
 
 ### Installation
 
@@ -62,7 +62,7 @@ A Django REST API service for authentication and user management, built with Dja
 python manage.py runserver
 ```
 
-The API will be available at `http://localhost:8000`
+The API will be available at `http://localhost:8000/api/`
 
 ### Running Tests
 
