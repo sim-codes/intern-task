@@ -1,0 +1,23 @@
+{
+    "builds": [
+        {
+            "src": "thrive_ai_backend/wsgi.py",
+            "use": "@vercel/python",
+            "config": { "maxLambdaSize": "15mb", "runtime": "python3.12" }
+        },
+        {
+            "src": "staticfiles/**",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/static/(.*)",
+            "dest": "/staticfiles/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "auth_service/wsgi.py"
+        }
+    ]
+}
