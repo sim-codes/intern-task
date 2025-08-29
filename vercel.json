@@ -12,13 +12,6 @@
     ],
      "buildCommand": "pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate",
     "routes": [
-        {
-            "src": "/static/(.*)",
-            "dest": "/staticfiles/$1"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "auth_service/wsgi.py"
-        }
-    ]
+    { "src": "/(.*)", "dest": "auth_service/wsgi.py" }
+  ]
 }
