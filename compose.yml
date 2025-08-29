@@ -1,0 +1,38 @@
+services:
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-djangodb}
+      POSTGRES_USER: ${DATABASE_USERNAME:-django}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-django123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  django-web:
+    build: .
+    container_name: bill-station
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: ${DEBUG}
+      DATABASE_URL: postgresql://${DATABASE_USERNAME:-django}:${DATABASE_PASSWORD:-django123}@db:5432/${DATABASE_NAME:-djangodb}
+      REDIS_URL: redis://redis:6379/1
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
+  redis_data:

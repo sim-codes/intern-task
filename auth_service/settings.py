@@ -184,6 +184,17 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Auth Service API',
+    'DESCRIPTION': 'Authentication and User Management API',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+
+    'SWAGGER_UI_DIST': 'SIDECAR',
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
